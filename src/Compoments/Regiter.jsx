@@ -46,7 +46,7 @@ const Register = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, password,confirmPassword }),
+          body: JSON.stringify({ email, password, confirmPassword }),
         });
 
         const data = await response.json();
@@ -66,15 +66,15 @@ const Register = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-white rounded-lg w-1/3 border-2 border-blue-500 p-10">
-        <h1 className="text-4xl font-bold text-blue-600 mb-5">Register</h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="bg-white w-full max-w-md rounded-lg border-2 border-blue-500 p-6 md:p-10 shadow-lg">
+        <h1 className="text-center text-2xl md:text-4xl font-bold text-blue-600 mb-5">Register</h1>
         {successMessage && (
-          <p className="text-green-500 mb-4">{successMessage}</p>
+          <p className="text-green-500 mb-4 text-center">{successMessage}</p>
         )}
-        <form className="text-lg" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label>Email</label>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-lg">Email</label>
             <input
               type="email"
               className="w-full rounded-lg border-2 border-slate-500 mt-1 p-2"
@@ -82,10 +82,10 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {errors.email && <p className="text-red-500">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
           </div>
-          <div className="mb-4">
-            <label>Password</label>
+          <div>
+            <label className="block text-lg">Password</label>
             <input
               type="password"
               className="w-full rounded-lg border-2 border-slate-500 mt-1 p-2"
@@ -93,10 +93,10 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {errors.password && <p className="text-red-500">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
-          <div className="mb-4">
-            <label>Confirm Password</label>
+          <div>
+            <label className="block text-lg">Confirm Password</label>
             <input
               type="password"
               className="w-full rounded-lg border-2 border-slate-500 mt-1 p-2"
@@ -105,13 +105,13 @@ const Register = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             {errors.confirmPassword && (
-              <p className="text-red-500">{errors.confirmPassword}</p>
+              <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
             )}
           </div>
-          {errors.api && <p className="text-red-500 mb-4">{errors.api}</p>}
+          {errors.api && <p className="text-red-500 text-sm mt-1">{errors.api}</p>}
           <button 
             type="submit"
-            className="w-full px-5 py-3 bg-blue-700 text-white mt-3 rounded-full"
+            className="w-full px-5 py-3 bg-blue-700 text-white mt-3 rounded-full hover:bg-blue-800 transition-colors"
           >
             Register
           </button>
