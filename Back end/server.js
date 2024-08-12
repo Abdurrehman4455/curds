@@ -13,6 +13,9 @@ connectDB().then(() => {
 
   });
   app.use(cors(
+    origin= "https://curds-chi.vercel.app", // This is the correct format
+    methods="GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials=true,
     
   ));
   
