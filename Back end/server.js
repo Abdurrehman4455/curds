@@ -12,7 +12,9 @@ connectDB().then(() => {
     console.log('Database connection failed:', error.message);
 
   });
-  app.use(cors());
+  app.use(cors(
+    
+  ));
   
   
 app.use(express.json());
