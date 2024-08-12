@@ -13,9 +13,7 @@ connectDB().then(() => {
 
   });
   app.use(cors());
-  app.use(cors({
-    origin: 'https://curds-chi.vercel.app/', // Replace with your Vercel domain
-  }));
+  
   
 app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
