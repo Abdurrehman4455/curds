@@ -4,14 +4,14 @@ const Table = ({ data, EditClick, deleteData }) => {
   return (
     <div className="mt-4 overflow-x-auto">
       <table className="min-w-full bg-white border">
-        <thead>
-          <tr className="bg-blue-700 text-white">
-            <th className="py-2 px-4 text-left">Name</th>
-            <th className="py-2 px-4 text-left">Lastname</th>
-            <th className="py-2 px-4 text-left hidden sm:table-cell">Address</th>
-            <th className="py-2 px-4 text-left hidden md:table-cell">Contact No</th>
-            <th className="py-2 px-4 text-left hidden lg:table-cell">Blood Group</th>
-            <th className="py-2 px-4 text-left">Actions</th>
+        <thead className='text-center'>
+          <tr className="bg-blue-700 text-white text-center">
+            <th className="py-2 px-4  text-center">Name</th>
+            <th className="py-2 px-4  text-center">Lastname</th>
+            <th className="py-2 px-4  text-center hidden sm:table-cell">Address</th>
+            <th className="py-2 px-4  text-center hidden md:table-cell">Contact No</th>
+            <th className="py-2 px-4  text-center hidden lg:table-cell">Blood Group</th>
+            <th className="py-2 px-4  text-center">Actions</th>
           </tr>
         </thead>
         <tbody>

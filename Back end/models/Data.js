@@ -11,11 +11,13 @@ const dataSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
   contactNo: {
     type: String,
-    required: true
+    required: true,
+    unique: true,
   },
   bloodGroup: {
     type: String,
