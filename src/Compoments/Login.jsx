@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = ({ setAuthenticated }) => {
+const Login = ({ SetAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -46,7 +46,9 @@ const Login = ({ setAuthenticated }) => {
 
         if (response.ok) {
           localStorage.setItem('token', data.token);
+          
           alert('Login successful');
+          SetAuthenticated(true);
           navigate('/dashboard');
         } else {
           setErrors({ api: data.message || 'Login failed' });

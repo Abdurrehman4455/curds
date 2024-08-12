@@ -1,7 +1,13 @@
 import { useState } from "react";
- import { Link } from "react-router-dom"
-const Nav = () => {
+ import { Link,useNavigate } from "react-router-dom"
+const Nav = ({isAuthenticated,SetisAuthenticated}) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate=useNavigate();
+    const handleLogout = () => {
+      localStorage.removeItem('token');
+      SetisAuthenticated(false);
+      navigate('/login');
+    };
 
     const toggleMenu = () => {
       setIsMenuOpen(!isMenuOpen);
@@ -29,9 +35,22 @@ const Nav = () => {
         </div>
      <div className={` text-white font-bold   lg:block  ${isMenuOpen?'block':'hidden'} lg:block`}>
           <nav  className="space-x-3 l max-sm:flex-col">
-          <Link to='/login'>Login</Link>
-           
-          <Link to='/Register'>Register</Link>
+          {!isAuthenticated ? (
+            <>
+              <Link to='/login'>Login</Link>
+              <Link to='/register'>Register</Link>
+            </>
+          ) : (
+            <>
+              <Link to='/dashboard'>Dashboard</Link>
+              <button 
+                onClick={handleLogout} 
+                className="text-white rounded-lg bg-red-600 p-4"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </nav>
      </div>
     </div>
