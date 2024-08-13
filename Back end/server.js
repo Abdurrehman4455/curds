@@ -12,12 +12,12 @@ connectDB().then(() => {
     console.log('Database connection failed:', error.message);
 
   });
-  app.use(cors(
-    origin= "https://curds-chi.vercel.app/register", // This is the correct format
-    methods="GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials=true,
-    
-  ));
+  app.use(cors({
+    origin: 'https://curds-nine.vercel.app', // Allow your Vercel domain
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods if needed
+    credentials: true // Allow credentials if required
+  }));
+  
   
   
 app.use(express.json());
