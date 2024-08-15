@@ -13,9 +13,8 @@ connectDB().then(() => {
 
   });
   app.use(cors({
-    origin: 'https://curds-nine.vercel.app', // Allow your Vercel domain
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods if needed
-    credentials: true // Allow credentials if required
+  
+     
   }));
   
   
