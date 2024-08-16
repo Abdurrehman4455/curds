@@ -4,6 +4,7 @@ const Data = require('../models/Data');
 
 // Route to add new data
 router.post('/add', async (req, res) => {
+ 
   const { name, lastname, address, contactNo, bloodGroup } = req.body;
   const newData = new Data({ name, lastname, address, contactNo, bloodGroup });
   try {
@@ -61,8 +62,32 @@ router.delete('/data/:contactNo', async (req, res) => {
     res.status(400).send({ message: 'Error deleting data', error });
   }
 });
+//Email verification endpoint
+router.get('/verify-email', async (req, res) => {
+  const { token } = req.query;
+
+  try {
+    const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token.' });
+    }
+
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({ message: 'Email verified successfully. You can now log in.' });
+  } catch (error) {
+    console.error('Error during email verification:', error.message);
+    res.status(500).json({ message: 'Server error. Please try again later.' });
+  }
+});
 
 module.exports = router;
 
-
-module.exports = router;

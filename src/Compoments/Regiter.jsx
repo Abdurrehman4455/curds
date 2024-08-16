@@ -51,7 +51,7 @@ const Register = () => {
 
         const data = await response.json();
         if (response.ok) {
-          setSuccessMessage('Registered successfully');
+          setSuccessMessage(`Verification email sent to ${email}. Please check your inbox.`);
           setEmail('');
           setPassword('');
           setConfirmPassword('');
@@ -73,6 +73,7 @@ const Register = () => {
           <p className="text-green-500 mb-4 text-center">{successMessage}</p>
         )}
         <form className="space-y-6" onSubmit={handleSubmit}>
+          <h1 className='text-center'>enter your verified email </h1>
           <div>
             <label className="block text-lg">Email</label>
             <input
