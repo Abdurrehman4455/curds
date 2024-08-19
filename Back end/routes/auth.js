@@ -33,6 +33,7 @@ router.post('/register', async (req, res) => {
       verificationTokenExpire,
       isVerified: false, 
     });
+    await newUser.save(); 
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -54,11 +55,13 @@ router.post('/register', async (req, res) => {
     
        // Send a success response
        res.status(201).json({ message: `Verification email sent to ${email}. Please check your email.` });
+       
   } catch (error) {
     console.error('Error during registration:', error.message);
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 router.get('/verify-email', async (req, res) => {
   const { token } = req.query;
 
@@ -66,7 +69,8 @@ router.get('/verify-email', async (req, res) => {
     // Find the user by the verification token and ensure the token is still valid
     const user = await User.findOne({
       verificationToken: token,
-      verificationTokenExpire: { $gt: Date.now() }, // Ensure the token is not expired
+      verificationTokenExpire: { $gt: Date.now() } 
+      // Ensure the token is not expired
     });
 
     if (!user) {
@@ -77,6 +81,7 @@ router.get('/verify-email', async (req, res) => {
     user.isVerified = true;
     user.verificationToken = undefined; // Clear the token after verification
     user.verificationTokenExpire = undefined;
+  
     await user.save();
 
     // Redirect the user to the dashboard or another confirmation page
