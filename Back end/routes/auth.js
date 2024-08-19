@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
     });
 
 
-    await newUser.save();
+    
        // Send a success response
        res.status(201).json({ message: `Verification email sent to ${email}. Please check your email.` });
   } catch (error) {

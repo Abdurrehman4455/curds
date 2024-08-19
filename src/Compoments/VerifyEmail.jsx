@@ -1,38 +1,46 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const VerifyEmail = () => {
-  const navigates= useNavigate();
-  useEffect(() => {
-    const verifyToken = async () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const token = queryParams.get('token');
-      const navigates=useNavigate();
+  const navigate = useNavigate();
+  const [isVerifying, setIsVerifying] = useState(false);
 
-      if (token) {
-        try {
-          const response = await fetch(`http://localhost:5000/api/auth/verify-email?token=${token}`, {
-            method: 'GET',
-          });
+  const handleVerify = async () => {
+    setIsVerifying(true);
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get('token');
 
-          if (response.ok) {
-            // Redirect to dashboard on successful verification
-            navigates('/dashboard');
-          } else {
-            console.error('Verification failed');
-            // You can add logic here to show an error message to the user
-          }
-        } catch (error) {
-          console.error('Error verifying email:', error);
-          // You can add logic here to show an error message to the user
+    if (token) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/auth/verify-email?token=${token}`, {
+          method: 'GET',
+        });
+
+        if (response.ok) {
+          // Redirect to dashboard on successful verification
+          navigate('/dashboard');
+        } else {
+          console.error('Verification failed');
+          alert('Verification failed. Please try again.');
         }
+      } catch (error) {
+        console.error('Error verifying email:', error);
+        alert('An error occurred during verification. Please try again later.');
       }
-    };
+    } else {
+      alert('No token found. Invalid verification link.');
+    }
+    setIsVerifying(false);
+  };
 
-    verifyToken();
-  }, [history]);
-
-  return <div>Verifying your email...</div>;
+  return (
+    <div>
+      <h2 className='font-bold  text-[15px]'>Click the button below to verify your email.</h2>
+      <button onClick={handleVerify} disabled={isVerifying} className='bg-green-500 text-white px-5 py-5 '>
+        {isVerifying ? 'Verifying...' : 'Verify Email'}
+      </button>
+    </div>
+  );
 };
 
 export default VerifyEmail;
