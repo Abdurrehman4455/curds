@@ -33,7 +33,7 @@ router.post('/register', async (req, res) => {
       verificationTokenExpire,
       isVerified: false, 
     });
-    await newUser.save(); 
+     await newUser.save(); 
     const transporter = nodemailer.createTransport({
       service: 'Gmail',
       auth: {
@@ -81,7 +81,6 @@ router.get('/verify-email', async (req, res) => {
     user.isVerified = true;
     user.verificationToken = undefined; // Clear the token after verification
     user.verificationTokenExpire = undefined;
-  
     await user.save();
 
     // Redirect the user to the dashboard or another confirmation page

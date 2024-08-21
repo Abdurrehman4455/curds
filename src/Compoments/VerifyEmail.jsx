@@ -18,6 +18,7 @@ const VerifyEmail = () => {
 
         if (response.ok) {
           // Redirect to dashboard on successful verification
+          alert("vericificati0nsucessful");
           navigate('/dashboard');
         } else {
           const errorData = await response.json(); // Get detailed error message
