@@ -1,16 +1,36 @@
 {
-    "version": 2,
-    "builds": [
-      { "src": "Back end/server.js", "use": "@vercel/node" }
-    ],
-    "routes": [
-      { "src": "Back end/server.js", "dest": "/Back end/server.js" }
-    ],
-    "rewrites": [
-      {
-        "source": "/(.*)",
-        "destination": "/index.html"
-        
+  "version": 2,
+  "builds": [
+    {
+      "src": "Back end/server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "src/index.html",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
       }
-    ]
-  }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "Back end/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/Back end/server.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

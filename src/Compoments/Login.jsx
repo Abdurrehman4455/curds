@@ -48,8 +48,9 @@ const Login = ({ SetAuthenticated }) => {
           localStorage.setItem('token', data.token);
           
           alert('Login successful');
-          SetAuthenticated(true);
+          
           localStorage.setItem('token', data.token);
+          SetAuthenticated(true);
           navigate('/dashboard');
         } else {
           setErrors({ api: data.message || 'Login failed' });
