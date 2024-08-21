@@ -5,5 +5,12 @@
     ],
     "routes": [
       { "src": "Back end/server.js", "dest": "/Back end/server.js" }
+    ],
+    "rewrites": [
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+        
+      }
     ]
   }
