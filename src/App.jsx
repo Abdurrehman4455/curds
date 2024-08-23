@@ -6,6 +6,7 @@ import Register from "./Compoments/Regiter"
 import Dashboard from './Compoments/Dashboard';
 import VerifyEmail from './Compoments/VerifyEmail';
 
+
 function App() {
   const[isAuthenticated,SetisAuthenticated]=useState(false);
   useEffect(()=>{
@@ -26,7 +27,7 @@ function App() {
         <Route path='/login' element={<Login SetAuthenticated={SetisAuthenticated}/>} />
         <Route path='/Register' element={<Register/>} />
         <Route path='/dashboard' element={isAuthenticated ? <Dashboard /> : <Login setisAuthenticated={SetisAuthenticated} />} />
-        <Route path='/verify-email' element={<VerifyEmail/>} SetAuthenticated={SetisAuthenticated} />
+        <Route path='/verify-email' element={<VerifyEmail  SetAuthenticated={SetisAuthenticated}/>} />
         
         
       </Routes>

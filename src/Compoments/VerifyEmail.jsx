@@ -30,7 +30,7 @@ const VerifyEmail = ({SetAuthenticated}) => {
          
           // Redirect to the dashboard
           alert("Verification successful! Redirecting to your dashboard...");
-         
+          SetAuthenticated(true);
           navigate('/dashboard')
           // Redirect to dashboard on successful verification
        
