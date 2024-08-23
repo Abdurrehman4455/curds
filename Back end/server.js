@@ -20,10 +20,7 @@ app.use(express.json())
   
   
 
-  app.use(express.static('build'));
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-});
+  
 
   
 app.use(express.json());

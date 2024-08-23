@@ -26,7 +26,7 @@ function App() {
         <Route path='/login' element={<Login SetAuthenticated={SetisAuthenticated}/>} />
         <Route path='/Register' element={<Register/>} />
         <Route path='/dashboard' element={isAuthenticated ? <Dashboard /> : <Login setisAuthenticated={SetisAuthenticated} />} />
-        <Route path='/verify-email' element={<VerifyEmail/>} />
+        <Route path='/verify-email' element={<VerifyEmail/>} SetAuthenticated={SetisAuthenticated} />
         
         
       </Routes>

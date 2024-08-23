@@ -61,7 +61,13 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
-
+const generateAuthToken = (user) => {
+  const payload = {
+    email: user.email,
+    isVerified: user.isVerified,
+  };
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '20m' });
+}
 router.get('/verify-email', async (req, res) => {
   const { token } = req.query;
 
@@ -82,9 +88,9 @@ router.get('/verify-email', async (req, res) => {
     user.verificationToken = undefined; // Clear the token after verification
     user.verificationTokenExpire = undefined;
     await user.save();
+    const authToken = generateAuthToken(user);
 
-    // Redirect the user to the dashboard or another confirmation page
-    res.redirect('http://localhost:5173/dashboard'); // Replace with the actual dashboard or confirmation route
+    res.json({ authToken, message: 'Email verified successfully' });
   } catch (error) {
     console.error('Error during email verification:', error.message);
     res.status(500).json({ message: 'Server error. Please try again later.' });
