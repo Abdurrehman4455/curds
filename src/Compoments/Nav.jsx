@@ -1,23 +1,34 @@
-import { useState } from "react";
- import { Link,useNavigate } from "react-router-dom"
-const Nav = ({isAuthenticated,SetisAuthenticated}) => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const navigate=useNavigate();
-    const handleLogout = () => {
-      localStorage.removeItem('token');
-      SetisAuthenticated(false);
-      navigate('/login');
-    };
 
-    const toggleMenu = () => {
-      setIsMenuOpen(!isMenuOpen);
-    };
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import Search from "./Search";
+
+const Nav = ({ isAuthenticated, SetisAuthenticated, onSearch, onClear }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    SetisAuthenticated(false);
+    navigate('/login');
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <div className="flex justify-around  bg-blue-700 w-full h-[80px] items-center ">
-     <div className="text-white w-[30%]  font-bold">
-          Curd
-     </div>
-     <div className="lg:hidden md:block max-sm:block  flex items-center">
+    <div className="flex justify-around bg-blue-700 w-full h-[80px] items-center ">
+      <div className="text-white w-[30%] font-bold">
+        Curd
+      </div>
+      {isAuthenticated && location.pathname === '/dashboard' && (
+        <div className="mr-10">
+          <Search onSearch={onSearch} onClear={onClear} />
+        </div>
+      )}
+      <div className="lg:hidden md:block max-sm:block flex items-center">
         <button 
           onClick={toggleMenu} 
           className="text-white focus:outline-none"
@@ -32,9 +43,9 @@ const Nav = ({isAuthenticated,SetisAuthenticated}) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
           </svg>
         </button>
-        </div>
-     <div className={` text-white font-bold   lg:block  ${isMenuOpen?'block':'hidden'} lg:block`}>
-          <nav  className="space-x-3 l max-sm:flex-col">
+      </div>
+      <div className={`text-white font-bold lg:block ${isMenuOpen ? 'block' : 'hidden'} lg:block`}>
+        <nav className="space-x-3 max-sm:flex-col">
           {!isAuthenticated ? (
             <>
               <Link to='/login'>Login</Link>
@@ -52,10 +63,9 @@ const Nav = ({isAuthenticated,SetisAuthenticated}) => {
             </>
           )}
         </nav>
-     </div>
+      </div>
     </div>
-    
-  )
+  );
 }
 
-export default Nav
+export default Nav;

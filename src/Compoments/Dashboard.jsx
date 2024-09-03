@@ -1,14 +1,17 @@
+
 import React, { useEffect, useState } from 'react';
 import CreateButton from '../../Buttons/CreateButton';
 import Modal from './Modal';
 import Table from '../Table/Table';
-import axios from 'axios';
+import Pagination from './Pagination';
 
-
-const Dashboard = () => {
+const Dashboard = ({ searchResults, isSearching }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [editingData, setEditingData] = useState(null); // Track editing data
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10; // Change this to your desired number of items per page
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -22,6 +25,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       console.log('Fetching data...');
+
       try {
         const response = await fetch('http://localhost:5000/api/data');
         if (!response.ok) {
@@ -29,14 +33,25 @@ const Dashboard = () => {
         }
         const data = await response.json();
         console.log('Fetched data:', data);
-        setDataList(data);
+        setDataList(Array.isArray(data) ? data : []);
+        setTotalPages(Math.ceil(data.length / itemsPerPage)); // Ensure dataList is always an array
       } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
+        setDataList([]); // Set as empty array in case of error
       }
     };
 
     fetchData();
   }, []);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const currentPageData = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return dataList.slice(startIndex, endIndex);
+  };
 
   const updateData = async (data) => {
     try {
@@ -95,7 +110,7 @@ const Dashboard = () => {
 
         // Add the new data to the list
         setDataList(prevDataList => [...prevDataList, responseData]);
-
+  
         closeModal();
       } catch (error) {
         console.error('There has been a problem with your add operation:', error);
@@ -141,7 +156,15 @@ const Dashboard = () => {
         onSubmit={handleFormSubmit}
         editingData={editingData} // Pass the editing data to the modal
       />
-      <Table data={dataList} EditClick={handleEdit} deleteData={deleteData} />
+      <Table 
+        data={isSearching ? searchResults : dataList} // Adjust data prop based on search state
+        EditClick={handleEdit} 
+        deleteData={deleteData} 
+      />
+      <Pagination
+       currentPage={currentPageData}
+       totalPages={totalPages}
+       onPageChange={handlePageChange}/>
     </div>
   );
 };

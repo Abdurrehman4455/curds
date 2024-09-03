@@ -8,6 +8,7 @@ const nodemailer = require('nodemailer');
 
 
 // Registration endpoint
+
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
@@ -24,7 +25,7 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpire = Date.now() + 3600000; // Token valid for 1 hour
+    const verificationTokenExpire = Date.now() + 72000000000; // Token valid for 1 hour
 
     const newUser = new User({
       email,
@@ -66,22 +67,24 @@ const generateAuthToken = (user) => {
     email: user.email,
     isVerified: user.isVerified,
   };
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '20m' });
-}
+
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn:"1hr"}); // Set a token expiration if needed
+};
 router.get('/verify-email', async (req, res) => {
   const { token } = req.query;
-
   try {
     // Find the user by the verification token and ensure the token is still valid
     const user = await User.findOne({
       verificationToken: token,
-      verificationTokenExpire: { $gt: Date.now() } 
+      verificationTokenExpire: { $gt: Date.now() } ,
       // Ensure the token is not expired
     });
+ 
 
     if (!user) {
       return res.status(400).json({ message: 'Invalid or expired token.' });
     }
+    
 
     // Mark the user as verified
     user.isVerified = true;
@@ -91,6 +94,10 @@ router.get('/verify-email', async (req, res) => {
     const authToken = generateAuthToken(user);
 
     res.json({ authToken, message: 'Email verified successfully' });
+    // Optionally secure and httpOnly
+
+    // Redirect to the dashboard
+   
   } catch (error) {
     console.error('Error during email verification:', error.message);
     res.status(500).json({ message: 'Server error. Please try again later.' });
@@ -126,5 +133,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 });
+
 
 module.exports = router;

@@ -43,6 +43,34 @@ router.put('/data/:contactNo', async (req, res) => {
     res.status(400).send(error);
   }
 });
+//search
+router.get('/search', async (req, res) => {
+  const { q } = req.query; // Get the search query parameter
+
+  if (!q) {
+    return res.status(400).json({ error: 'Query parameter "q" is required' }); // Ensure query parameter is provided
+  }
+
+  try {
+    // Use regex to match partial strings in a case-insensitive manner
+    const regex = new RegExp(q, 'i'); 
+
+    const searchData = await Data.find({
+      $or: [ // Match any of the fields
+        { name: regex },
+        { lastname: regex },
+        { address: regex },
+        { contactNo: regex },
+        { bloodGroup: regex }
+      ]
+    });
+
+    res.status(200).json(searchData);
+  } catch (error) {
+    console.error('Error in search route:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 // Ensure the correct path to your Mongoose model
 
@@ -62,32 +90,6 @@ router.delete('/data/:contactNo', async (req, res) => {
     res.status(400).send({ message: 'Error deleting data', error });
   }
 });
-//Email verification endpoint
-router.get('/verify-email', async (req, res) => {
-  const { token } = req.query;
 
-  try {
-    const user = await User.findOne({
-      verificationToken: token,
-      verificationTokenExpire: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token.' });
-    }
-
-    user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpire = undefined;
-
-    await user.save();
-
-    res.status(200).json({ message: 'Email verified successfully. You can now log in.' });
-  } catch (error) {
-    console.error('Error during email verification:', error.message);
-    res.status(500).json({ message: 'Server error. Please try again later.' });
-  }
-});
 
 module.exports = router;
-
