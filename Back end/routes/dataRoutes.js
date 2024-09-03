@@ -15,9 +15,26 @@ router.post('/add', async (req, res) => {
   }
 });
 router.get('/data', async (req, res) => {
+  const { page = 1, limit = 10 } = req.query; // Default page is 1, limit is 10
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit);
+
   try {
-    const alldata = await Data.find();
-    res.status(200).json(alldata);
+    // Calculate the total count of documents
+    const totalDocuments = await Data.countDocuments();
+
+    // Fetch data with pagination
+    const data = await Data.find()
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber);
+
+    // Send the paginated data along with pagination info
+    res.status(200).json({
+      data,
+      currentPage: pageNumber,
+      totalPages: Math.ceil(totalDocuments / limitNumber),
+      totalDocuments,
+    });
   } catch (error) {
     res.status(500).send(error);
   }

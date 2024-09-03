@@ -22,31 +22,29 @@ const Dashboard = ({ searchResults, isSearching }) => {
     setEditingData(null); // Clear editing data when closing the modal
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log('Fetching data...');
-
-      try {
-        const response = await fetch('http://localhost:5000/api/data');
-        if (!response.ok) {
-          throw new Error('Network response was not ok: ' + response.statusText);
-        }
-        const data = await response.json();
-        console.log('Fetched data:', data);
-        setDataList(Array.isArray(data) ? data : []);
-        setTotalPages(Math.ceil(data.length / itemsPerPage)); // Ensure dataList is always an array
-      } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-        setDataList([]); // Set as empty array in case of error
+  const fetchData = async (page = 1, limit = itemsPerPage) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/data?page=${page}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok: ' + response.statusText);
       }
-    };
-
-    fetchData();
-  }, []);
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+      const { data, currentPage, totalPages } = await response.json();
+      setDataList(data);
+      setCurrentPage(currentPage);
+      setTotalPages(totalPages);
+    } catch (error) {
+      console.error('There has been a problem with your fetch operation:', error);
+      setDataList([]); // Set as empty array in case of error
+    }
   };
 
+  useEffect(() => {
+    fetchData(currentPage); // Fetch data when the component mounts or currentPage changes
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page); // Update the current page
+  };
   const currentPageData = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
