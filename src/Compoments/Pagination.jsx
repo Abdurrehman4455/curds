@@ -37,9 +37,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
       {/* Next Button */}
       <button
-        onClick={() => onPageChange(currentPage + 1)}
-        className="px-4 py-2 text-sm font-medium text-white bg-blue-800 disabled:bg-gray-300"
-        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage ++)}
+        className="px-4 py-2 text-sm font-medium text-white bg-blue-800"
+  
       >
         Next
       </button>

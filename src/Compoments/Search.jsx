@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 
-const Search = ({ onSearch }) => {
+const Search = ({ onSearch,onClear }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Update state when input changes
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleInputChange = () => {
+    
+    setSearchTerm(newSearchTerm);
+    if (newSearchTerm === '') {
+      onClear(); // Call onClear to reset to default data when input is cleared
+    }
+
+    
   };
 
   // Handle form submission
@@ -34,19 +40,26 @@ const Search = ({ onSearch }) => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} className='ml-[-80%]'>
-        <input
-          type='text'
-          name='search'
-          placeholder='search'
-          className='w-full rounded-full'
-          value={searchTerm}
-          onChange={handleInputChange} // Handle input changes
-        />
-        <button type='submit' className='ml-2 p-2 rounded-full bg-blue-500 text-white'>Search</button>
-      </form>
-    </div>
+    <div className='flex mr-[10rem]'>
+  <form onSubmit={handleSubmit} className='flex w-full'>
+    <input
+      type='text'
+      name='search'
+      placeholder='search'
+      className='w-full rounded-full '
+      value={searchTerm}
+      onChange={handleInputChange} // Handle input changes
+    />
+    <button
+      type='submit'
+      className='ml-2 p-2 rounded-full bg-blue-500 text-white'
+      
+    >
+      Search
+    </button>
+  </form>
+</div>
+
   );
 };
 
