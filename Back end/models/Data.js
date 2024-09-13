@@ -1,4 +1,6 @@
+
 const mongoose = require('mongoose');
+const Department = require('../models/Department');
 
 const dataSchema = new mongoose.Schema({
   name: {
@@ -22,9 +24,18 @@ const dataSchema = new mongoose.Schema({
   bloodGroup: {
     type: String,
     required: true
-  }
+  },
+  // Adding reference to Department
+  department: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Department', 
+    required: true 
+  },  // Reference to Department
+  departmentName: { 
+    type: String 
+  }  // Optionally/ Optionally store the department name for easier access
 });
 
-const Data = mongoose.model('Data', dataSchema);
 
+const Data = mongoose.model('Data', dataSchema);
 module.exports = Data;

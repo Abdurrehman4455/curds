@@ -6,6 +6,7 @@ import Login from "./Compoments/Login";
 import Register from "./Compoments/Regiter";
 import Dashboard from './Compoments/Dashboard';
 import VerifyEmail from './Compoments/VerifyEmail';
+import Forgotpassword from './Compoments/Forgotpassword';
 
 function App() {
   const [isAuthenticated, SetisAuthenticated] = useState(false);
@@ -50,6 +51,7 @@ function App() {
           <Login setisAuthenticated={SetisAuthenticated} />
         )} />
         <Route path='/verify-email' element={<VerifyEmail SetAuthenticated={SetisAuthenticated} />} />
+        <Route path='/forgotpassword'element={<Forgotpassword/>}/>
       </Routes>
     </Router>
   );

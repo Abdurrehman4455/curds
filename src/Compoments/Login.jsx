@@ -106,6 +106,9 @@ const Login = ({ SetAuthenticated }) => {
             Login
           </button>
         </form>
+        <div  className='flex justify-end mt-2'>
+             <a href='/forgotpassword'>Forgotpassowrd ?</a>
+        </div>
       </div>
     </div>
   );

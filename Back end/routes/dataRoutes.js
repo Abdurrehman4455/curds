@@ -1,112 +1,109 @@
 const express = require('express');
 const router = express.Router();
 const Data = require('../models/Data');
+const Department = require('../models/Department');
 
-// Route to add new data
+// Route to add new data with department selection
 router.post('/add', async (req, res) => {
- 
-  const { name, lastname, address, contactNo, bloodGroup } = req.body;
-  const newData = new Data({ name, lastname, address, contactNo, bloodGroup });
+  const { name, lastname, address, contactNo, bloodGroup, departmentId } = req.body;
+
+  // Log the data received from the frontend
+  console.log("Received data:", req.body);
+
+  // Check for missing required fields
+  if (!name || !lastname || !contactNo || !departmentId) {
+    console.log("Missing required fields");
+    return res.status(400).send({ error: 'Missing required fields' });
+  }
+
   try {
+    const department = await Department.findById(departmentId);
+    if (!department) {
+      console.log("Department not found");
+      return res.status(404).send({ error: 'Department not found' });
+    }
+
+    // Save the data
+    const newData = new Data({
+      name,
+      lastname,
+      address,
+      contactNo,
+      bloodGroup,
+      department: department._id,
+      departmentName: department.departmentname  // Optional for easy reference
+    });
+
     await newData.save();
     res.status(201).send(newData);
   } catch (error) {
-    res.status(400).send(error);
+    console.error("Error saving data:", error);
+    res.status(500).send({ error: 'Server error', details: error.message });
   }
 });
+
+
+// Corrected route to fetch data with populated department field
 router.get('/data', async (req, res) => {
-  const { page = 1, limit = 10 } = req.query; // Default page is 1, limit is 10
-  const pageNumber = parseInt(page);
-  const limitNumber = parseInt(limit);
-
   try {
-    // Calculate the total count of documents
-    const totalDocuments = await Data.countDocuments();
+    const page = parseInt(req.query.page) || 1; // Default to 1 if no page provided
+    const limit = parseInt(req.query.limit) || 10; // Default to 10 if no limit provided
+    const skip = (page - 1) * limit; // Calculate the number of entries to skip
+    
+    // Get the total count of documents
+    const totalEntries = await Data.countDocuments();
 
-    // Fetch data with pagination
+    // Fetch the paginated data and populate the department field
     const data = await Data.find()
-      .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber);
+      .populate('department', 'departmentname')
+      .skip(skip)
+      .limit(limit);
 
-    // Send the paginated data along with pagination info
+    // Calculate total pages
+    const totalPages = Math.ceil(totalEntries / limit);
+
     res.status(200).json({
       data,
-      currentPage: pageNumber,
-      totalPages: Math.ceil(totalDocuments / limitNumber),
-      totalDocuments,
+      currentPage: page,
+      totalPages: totalPages,
     });
   } catch (error) {
     res.status(500).send(error);
   }
 });
 
-router.put('/data/:contactNo', async (req, res) => {
-  const { contactNo } = req.params;
-  const { name, lastname, address,bloodGroup } = req.body;
 
-  try {
-    const updatedData = await Data.findOneAndUpdate(
-      { contactNo }, // Find the document by contactNo
-      { name, lastname, address, bloodGroup }, // Update these fields
-      { new: true, runValidators: true } // Return the updated document
-    );
-
-    if (!updatedData) {
-      return res.status(404).send({ message: 'Data not found' });
-    }
-
-    res.status(200).send(updatedData);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-//search
-router.get('/search', async (req, res) => {
-  const { q } = req.query; // Get the search query parameter
-
-  if (!q) {
-    return res.status(400).json({ error: 'Query parameter "q" is required' }); // Ensure query parameter is provided
-  }
-
-  try {
-    // Use regex to match partial strings in a case-insensitive manner
-    const regex = new RegExp(q, 'i'); 
-
-    const searchData = await Data.find({
-      $or: [ // Match any of the fields
-        { name: regex },
-        { lastname: regex },
-        { address: regex },
-        { contactNo: regex },
-        { bloodGroup: regex }
-      ]
-    });
-
-    res.status(200).json(searchData);
-  } catch (error) {
-    console.error('Error in search route:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// Ensure the correct path to your Mongoose model
-
-// DELETE route to delete a single record by contactNo
-router.delete('/data/:contactNo', async (req, res) => {
+router.delete('/data/contactNo', async (req, res) => {
   const { contactNo } = req.params;
 
   try {
+    // Find the data entry to delete
     const deletedData = await Data.findOneAndDelete({ contactNo });
 
     if (!deletedData) {
       return res.status(404).send({ message: 'Data not found' });
     }
 
-    res.status(200).send({ message: 'Data deleted successfully', deletedData });
+    // Optionally delete the related department if it exists
+    if (deletedData.department) {
+      const deletedDepartment = await Department.findByIdAndDelete(deletedData.department);
+      if (deletedDepartment) {
+        console.log("Related department deleted:", deletedDepartment);
+      }
+    }
+
+    res.status(200).send({
+      message: 'Data and associated department deleted successfully',
+      data: deletedData,
+    });
   } catch (error) {
-    res.status(400).send({ message: 'Error deleting data', error });
+    console.error("Error deleting data and department:", error);
+    res.status(500).send({
+      message: 'Error deleting data and department',
+      error: error.message,
+    });
   }
 });
 
-
+    
 module.exports = router;

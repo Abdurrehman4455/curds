@@ -4,14 +4,12 @@ const Search = ({ onSearch,onClear }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   // Update state when input changes
-  const handleInputChange = () => {
-    
-    setSearchTerm(newSearchTerm);
-    if (newSearchTerm === '') {
-      onClear(); // Call onClear to reset to default data when input is cleared
-    }
-
-    
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
+    if (value === '') {
+      onClear();  // Clear search and fetch default data
+    }// Update state with input value
   };
 
   // Handle form submission

@@ -5,6 +5,7 @@ dotenv.config();
 const app = express();
 const cors = require('cors');
 const dataRoutes = require('./routes/dataRoutes');
+const departmentRoutes = require('./routes/Department'); 
 
 connectDB().then(() => {
     console.log('Database connection successful');
@@ -27,7 +28,8 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/data', dataRoutes);
 app.use('/api', dataRoutes);
-app.get(5000, (req, res) => {
+app.use('/api/Department', departmentRoutes); 
+app.get('/', (req, res) => {
   res.send('Server is running');
 });
 
