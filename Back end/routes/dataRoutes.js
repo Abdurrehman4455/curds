@@ -73,35 +73,48 @@ router.get('/data', async (req, res) => {
 });
 
 
-router.delete('/data/contactNo', async (req, res) => {
-  const { contactNo } = req.params;
+router.delete('/data/:id', async (req, res) => {
+  const { id } = req.params;
 
   try {
-    // Find the data entry to delete
-    const deletedData = await Data.findOneAndDelete({ contactNo });
+      console.log('Received id for deletion:', id); // Debugging: Log id
 
-    if (!deletedData) {
-      return res.status(404).send({ message: 'Data not found' });
-    }
+      // Attempt to find and delete the entry using _id
+      const deletedData = await Data.findByIdAndDelete(id);
 
-    // Optionally delete the related department if it exists
-    if (deletedData.department) {
-      const deletedDepartment = await Department.findByIdAndDelete(deletedData.department);
-      if (deletedDepartment) {
-        console.log("Related department deleted:", deletedDepartment);
+      if (!deletedData) {
+          console.log(`No data found with id: ${id}`);
+          return res.status(404).json({ message: 'Data not found' });
       }
+
+      res.status(200).json({ message: 'Data deleted successfully' });
+  } catch (error) {
+      console.error('Error deleting data:', error);
+      res.status(500).json({ message: 'Error deleting data', error: error.message });
+  }
+});
+router.get('/search', async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    // If the search query is empty, return an empty array
+    if (!q) {
+      return res.status(200).json([]);
     }
 
-    res.status(200).send({
-      message: 'Data and associated department deleted successfully',
-      data: deletedData,
+    // Search for items that match the query (modify fields as necessary)
+    const searchResults = await Data.find({
+      $or: [
+        { name: { $regex: q, $options: 'i' } }, // Case-insensitive search in the 'name' field
+        { description: { $regex: q, $options: 'i' } }, 
+        { departmentName: { $regex: q, $options: 'i' } }// Add more fields if needed
+      ]
     });
+
+    res.status(200).json(searchResults);
   } catch (error) {
-    console.error("Error deleting data and department:", error);
-    res.status(500).send({
-      message: 'Error deleting data and department',
-      error: error.message,
-    });
+    console.error('Error fetching search results:', error);
+    res.status(500).json({ message: 'Error fetching search results', error: error.message });
   }
 });
 

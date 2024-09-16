@@ -145,15 +145,13 @@ const Dashboard = ({ searchResults, isSearching }) => {
     setEditingData(data); // Set the data to be edited
     openModal();
   };
-
-  // Handle deleting an entry
-  const deleteData = async (contactNo) => {
+  const deleteData = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this entry?");
     if (!confirmDelete) return;
 
     try {
-        // Send the DELETE request to the backend with the contactNo in the URL
-        const response = await fetch(`http://localhost:5000/api/data/${contactNo}`, {
+        // Send the DELETE request to the backend with the _id in the URL
+        const response = await fetch(`http://localhost:5000/api/data/${id}`, {
             method: 'DELETE',
         });
 
@@ -165,12 +163,13 @@ const Dashboard = ({ searchResults, isSearching }) => {
         alert('Data deleted successfully');
 
         // Optionally, remove the deleted data from the local state
-        // setDataList((prevDataList) => prevDataList.filter((item) => item.contactNo !== contactNo));
+         setDataList((prevDataList) => prevDataList.filter((item) => item._id !== id));
     } catch (error) {
         console.error('There has been a problem with your delete operation:', error);
         alert(`Error deleting data: ${error.message}`);
     }
 };
+
 
   return (
     <div className="dashboard-container flex">

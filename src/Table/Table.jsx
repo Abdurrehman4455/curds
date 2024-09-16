@@ -41,7 +41,7 @@ const Table = ({ data, EditClick, deleteData }) => {
                 <button 
                   className="bg-red-500 text-white py-1 px-2 rounded hover:bg-red-700" 
                   onClick={() => deleteData(item._id)}
-                  aria-label={`Delete ${item.name || 'entry'}`}
+                
                 >
                   Delete
                 </button>
