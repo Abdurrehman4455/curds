@@ -102,14 +102,21 @@ router.get('/search', async (req, res) => {
       return res.status(200).json([]);
     }
 
-    // Search for items that match the query (modify fields as necessary)
+  
+    const matchingDepartments = await Department.find({ departmentname: { $regex: q, $options: 'i' } }).select('_id');
+
+   
+    const departmentIds = matchingDepartments.map(dept => dept._id);
+
+  
     const searchResults = await Data.find({
       $or: [
-        { name: { $regex: q, $options: 'i' } }, // Case-insensitive search in the 'name' field
-        { description: { $regex: q, $options: 'i' } }, 
-        { departmentName: { $regex: q, $options: 'i' } }// Add more fields if needed
+        { name: { $regex: q, $options: 'i' } }, 
+        { description: { $regex: q, $options: 'i' } },
+        { departmentName: { $regex: q, $options: 'i' } }, 
+        { department: { $in: departmentIds } } 
       ]
-    });
+    }).populate('department', 'departmentname');
 
     res.status(200).json(searchResults);
   } catch (error) {
@@ -117,6 +124,7 @@ router.get('/search', async (req, res) => {
     res.status(500).json({ message: 'Error fetching search results', error: error.message });
   }
 });
+
 
 router.put('/data/:id', async (req, res) => {
   const { id } = req.params; // Get the ID from the URL
