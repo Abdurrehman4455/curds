@@ -68,14 +68,21 @@ const Dashboard = ({ searchResults, isSearching }) => {
 
   // Handle form submission for adding or editing data
   const handleFormSubmit = async (data) => {
+    
     // Ensure that all fields, especially departmentId, are filled
     if (!data.name || !data.lastname || !data.contactNo || !data.departmentId) {
       alert('Please fill out all required fields.');
       return;
     }
+    if(editingData)
+    {
+      updateData(data);
+    }
+    else
+    {
   
     console.log("Form data to be submitted:", JSON.stringify(data, null, 2));  // Log the form data
-  
+    
     try {
       // Send a POST request to the backend to add the data
       const response = await fetch('http://localhost:5000/api/data/add', {
@@ -94,51 +101,53 @@ const Dashboard = ({ searchResults, isSearching }) => {
   
       const responseData = await response.json();  // Parse the response data
       alert('Data added successfully');
+      fetchData();
       
       // Update the state with the newly added data (uncomment if needed in your flow)
-      // setDataList((prevDataList) => [...prevDataList, responseData]);
+   //   setDataList((prevDataList) => [...prevDataList, responseData]);
   
       closeModal();  // Close the modal after successful data addition
     } catch (error) {
       console.error('There has been a problem with your add operation:', error);
       alert('Error adding data: ' + error.message);
     }
+  }
+  
   };
   
 
-  // Update function for editing data
   const updateData = async (data) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/data/${data.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
+        const response = await fetch(`http://localhost:5000/api/data/${data._id}`, { // Use _id for updates
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data), // Include the updated data, including departmentId
+        });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok: ' + response.statusText);
-      }
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
 
-      const responseData = await response.json();
-      console.log('Response data:', responseData);
+        const responseData = await response.json();
+        console.log('Response data:', responseData);
 
-      alert('Data updated successfully');
+        alert('Data updated successfully');
 
-      // Update the existing data in the list and ensure prevDataList is an array
-      setDataList((prevDataList) => {
-        return Array.isArray(prevDataList)
-          ? prevDataList.map((item) => (item.contactNo === responseData.contactNo ? responseData : item))
-          : [responseData];
-      });
+        // Update the existing data in the list
+        setDataList((prevDataList) =>
+          prevDataList.map((item) => (item._id === responseData._id ? responseData : item))
+      );
+      fetchData();
 
-      closeModal();
+        closeModal();
     } catch (error) {
-      console.error('There has been a problem with your update operation:', error);
-      alert('Error updating data: ' + error.message);
+        console.error('There has been a problem with your update operation:', error);
+        alert('Error updating data: ' + error.message);
     }
-  };
+};
+
 
   // Handle editing an entry
   const handleEdit = (data) => {

@@ -118,5 +118,29 @@ router.get('/search', async (req, res) => {
   }
 });
 
+router.put('/data/:id', async (req, res) => {
+  const { id } = req.params; // Get the ID from the URL
+  const { name, lastname, address, contactNo, bloodGroup, departmentId } = req.body; // Get data from the request body
+
+  try {
+      // Find the data by ID and update it with the new values
+      const updatedData = await Data.findByIdAndUpdate(
+          id, 
+          { name, lastname, address, contactNo, bloodGroup, department: departmentId },
+          { new: true, runValidators: true } // Return the updated document and run schema validation
+      );
+
+      if (!updatedData) {
+          return res.status(404).json({ message: 'Data not found' });
+      }
+
+      res.status(200).json(updatedData);
+  } catch (error) {
+      console.error('Error updating data:', error);
+      res.status(500).json({ message: 'Error updating data', error: error.message });
+  }
+});
+
+
     
 module.exports = router;
