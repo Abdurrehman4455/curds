@@ -25,7 +25,7 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpire = Date.now() + 72000000000; // Token valid for 1 hour
+    const verificationTokenExpire = Date.now() + 3600000; // Token valid for 1 hour
 
     const newUser = new User({
       email,
