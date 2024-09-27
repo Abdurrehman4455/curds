@@ -24,4 +24,25 @@ router.get('/departments', async (req, res) => {
     }
 });
 
+router.put('/update/:id', async (req, res) => {
+    const { id } = req.params; // Get the department ID from the route parameters
+    const { departmentname } = req.body; // Get the updated department name from the request body
+
+    try {
+        const updatedDepartment = await Department.findByIdAndUpdate(
+            id,
+            { departmentname },
+            { new: true, runValidators: true } // Return the updated document and run validation
+        );
+
+        if (!updatedDepartment) {
+            return res.status(404).send({ error: 'Department not found' }); // If the department was not found, send a 404 response
+        }
+
+        res.status(200).send(updatedDepartment); // Send back the updated department
+    } catch (error) {
+        res.status(400).send({ error: 'Failed to update department', details: error }); // Send back an error if the operation fails
+    }
+});
+
 module.exports = router;

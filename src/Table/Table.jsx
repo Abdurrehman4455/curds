@@ -32,7 +32,7 @@ const Table = ({ data, EditClick, deleteData }) => {
               <td className="py-2 px-4">{item.department?.departmentname || 'N/A'}</td>
               <td className="py-2 px-4">
                 <button 
-                  className="bg-yellow-500 text-white py-1 px-2 rounded mr-2 hover:bg-yellow-700" 
+                  className="bg-yellow-500 text-white py-1 px-2 rounded mr-2 hover:bg--700" 
                   onClick={() => EditClick(item)}
                   aria-label={`Edit ${item.name || 'entry'}`}
                 >
