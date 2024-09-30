@@ -78,12 +78,7 @@ const Department = () => {
             <button type="submit" className="mt-4 text-center rounded-lg bg-blue-500 px-2 py-2 text-white font-bold">
               ADD DEPARTMENT
             </button>
-            <button type="submit" className="mt-4 text-center rounded-lg bg-yellow-400 px-2 py-2 text-white font-bold">
-              EDIT DEPARTMENT
-            </button>
-            <button type="submit" className="mt-4 text-center rounded-lg bg-red-500 px-2 py-2 text-white font-bold">
-              Delete DEPARTMENT
-            </button>
+            
             {/* Additional buttons for edit and delete functionality */}
           </div>
         </form>

@@ -1,48 +1,67 @@
+
 const express = require('express');
 const router = express.Router();
-const Department = require('../models/Department'); // Adjust the path to your Department model
+const Department = require('../models/Department');
 
 // POST route to add a new department
 router.post('/addS', async (req, res) => {
-    const { departmentid, departmentname } = req.body; // Destructure department data from the request body
-    const newDepartment = new Department({ departmentid, departmentname }); // Create a new Department object
+    const { departmentid, departmentname } = req.body;
+    const newDepartment = new Department({ departmentid, departmentname });
 
     try {
-        await newDepartment.save(); // Save the new department to the database
-        res.status(201).send(newDepartment); // Send back the saved department with a 201 status
+        await newDepartment.save();
+        res.status(201).send(newDepartment);
     } catch (error) {
-        res.status(400).send({ error: 'Failed to add department', details: error }); // Send back an error if the operation fails
+        res.status(400).send({ error: 'Failed to add department', details: error });
     }
 });
+
 // GET route to fetch all departments
 router.get('/departments', async (req, res) => {
     try {
-        const departments = await Department.find(); // Fetch all departments from the database
-        res.status(200).send(departments); // Send back the departments with a 200 status
+        const departments = await Department.find();
+        res.status(200).json(departments);
     } catch (error) {
-        res.status(500).send({ error: 'Failed to fetch departments', details: error }); // Send back an error if the operation fails
+        res.status(500).send({ error: 'Failed to fetch departments', details: error });
     }
 });
 
-router.put('/update/:id', async (req, res) => {
-    const { id } = req.params; // Get the department ID from the route parameters
-    const { departmentname } = req.body; // Get the updated department name from the request body
+// PUT route to update department by departmentid
+router.put('/update/:departmentid', async (req, res) => {
+    const { departmentid } = req.params;
+    const { departmentname } = req.body;
 
     try {
-        const updatedDepartment = await Department.findByIdAndUpdate(
-            id,
+        const updatedDepartment = await Department.findOneAndUpdate(
+            { departmentid },
             { departmentname },
-            { new: true, runValidators: true } // Return the updated document and run validation
+            { new: true }
         );
 
         if (!updatedDepartment) {
-            return res.status(404).send({ error: 'Department not found' }); // If the department was not found, send a 404 response
+            return res.status(404).send({ error: 'Department not found' });
         }
 
-        res.status(200).send(updatedDepartment); // Send back the updated department
+        res.status(200).json(updatedDepartment);
     } catch (error) {
-        res.status(400).send({ error: 'Failed to update department', details: error }); // Send back an error if the operation fails
+        res.status(500).send({ error: 'Failed to update department', details: error });
     }
 });
+router.delete('/delete/:departmentid', async (req, res) => {
+    const { departmentid } = req.params;
+
+    try {
+        const deletedDepartment = await Department.findOneAndDelete({ departmentid });
+
+        if (!deletedDepartment) {
+            return res.status(404).send({ error: 'Department not found' });
+        }
+
+        res.status(200).json({ message: 'Department deleted successfully' });
+    } catch (error) {
+        res.status(500).send({ error: 'Failed to delete department', details: error });
+    }
+});
+
 
 module.exports = router;
