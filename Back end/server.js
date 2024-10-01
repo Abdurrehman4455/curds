@@ -38,3 +38,6 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));  
+// Import attendance routes
+const attendanceRoutes = require('./routes/attendanceRoutes');
+app.use('/api', attendanceRoutes);
